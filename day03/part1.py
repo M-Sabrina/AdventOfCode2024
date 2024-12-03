@@ -15,7 +15,7 @@ def main(input: str):
 
 
 def test():
-    assert main("test.txt") == 161, "test failed"
+    assert main("test1.txt") == 161, "test failed"
 
 
 if __name__ == "__main__":
