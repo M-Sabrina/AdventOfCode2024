@@ -5,19 +5,12 @@ from pathlib import Path
 def main(input: str):
     datafile = Path("day04") / input
     lines_str = datafile.read_text().splitlines()
-    lines_char = np.array([list(line) for line in lines_str])
-
-    matrix = np.zeros_like(lines_char, dtype=int)
-    matrix[lines_char == "X"] = 1
-    matrix[lines_char == "M"] = 2
-    matrix[lines_char == "A"] = 3
-    matrix[lines_char == "S"] = 4
-
-    horizontal_xmas = np.array([1, 2, 3, 4])
+    matrix = np.array([list(line) for line in lines_str])
+    horizontal_xmas = np.array(["X", "M", "A", "S"])
 
     output = 0
 
-    (rows, cols) = lines_char.shape
+    (rows, cols) = matrix.shape
     # search vertically
     for col in range(cols):
         for row in range(rows - 3):
