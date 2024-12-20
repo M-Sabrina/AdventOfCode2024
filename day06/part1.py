@@ -18,7 +18,7 @@ def main(input: str):
     lines = datafile.read_text().splitlines()
     map = np.array([list(line) for line in lines])
     (max_row, max_col) = map.shape
-    map_X = np.zeros((max_row, max_col))
+    map_X = np.zeros_like(map, dtype=int)
 
     while True:
         for symbol in ["<", ">", "^", "v"]:
@@ -51,8 +51,6 @@ def main(input: str):
             map[row, col] = "."
             map[new_row, new_col] = direction
             (row, col) = (new_row, new_col)
-
-    print(map_X)
 
     output = np.sum(map_X)
     return output
