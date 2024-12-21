@@ -85,7 +85,7 @@ def main(input: str):
             # if not (row == 6 and col == 36):
             #     continue
             if not forbidden(row, col, map):
-                print(f"{row=} {col=}")
+                # print(f"{row=} {col=}")
                 contains_loop = check_for_loops(row, col, map)
                 if contains_loop:
                     output += 1
