@@ -8,6 +8,7 @@ app = marimo.App(width="medium")
 def _():
     from pathlib import Path
     import numpy as np
+
     return Path, np
 
 
@@ -22,6 +23,7 @@ def _():
             n, r = divmod(n, 3)
             nums.append(str(r))
         return "".join(reversed(nums))
+
     return (ternary,)
 
 
@@ -64,6 +66,7 @@ def _(Path, np, ternary):
                     comb += 1
 
         return output
+
     return (main,)
 
 
