@@ -49,28 +49,36 @@ def _(Path, generate_combinations, np):
                 y_1 = y[combination[0]]
                 y_2 = y[combination[1]]
 
+                map_antinodes[y_1, x_1] = 1
+                map_antinodes[y_2, x_2] = 1
+
                 delta_x = x_2 - x_1
                 delta_y = y_2 - y_1
 
                 node_1_x = x_1 - delta_x
                 node_1_y = y_1 - delta_y
-                if (
+
+                while (
                     node_1_x >= 0
                     and node_1_x < max_x
                     and node_1_y >= 0
                     and node_1_y < max_y
                 ):
                     map_antinodes[node_1_y, node_1_x] = 1
+                    node_1_x = node_1_x - delta_x
+                    node_1_y = node_1_y - delta_y
 
                 node_2_x = x_2 + delta_x
                 node_2_y = y_2 + delta_y
-                if (
+                while (
                     node_2_x >= 0
                     and node_2_x < max_x
                     and node_2_y >= 0
                     and node_2_y < max_y
                 ):
                     map_antinodes[node_2_y, node_2_x] = 1
+                    node_2_x = node_2_x + delta_x
+                    node_2_y = node_2_y + delta_y
 
         return np.count_nonzero(map_antinodes == 1)
     return (main,)
@@ -79,7 +87,7 @@ def _(Path, generate_combinations, np):
 @app.cell
 def _(main):
     result = main("test.txt")
-    expected = 14
+    expected = 34
     if result != expected:
         print(f"test failed {result} != {expected}")
     else:
