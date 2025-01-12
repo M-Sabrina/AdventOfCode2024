@@ -8,12 +8,13 @@ app = marimo.App(width="medium")
 def _():
     from pathlib import Path
     import numpy as np
-    return Path, np
+    from numpy.typing import NDArray
+    return NDArray, Path, np
 
 
 @app.cell
-def _(np):
-    def convert_map(disk_map: np.array):
+def _(NDArray, np):
+    def convert_map(disk_map: NDArray[int]):
         memory = np.zeros(np.sum(disk_map))
         memory_ind = 0
         id_number = 0
@@ -32,35 +33,46 @@ def _(np):
 
 
 @app.cell
-def _(np):
-    def fragment(memory: np.array):
-        sorted = False
-        for ind, element in enumerate(memory):
-            if np.isnan(element):
-                # find index of highest not nan element
-                for highest_ind, highest_element in enumerate(memory[::-1]):
-                    if not np.isnan(highest_element):
+def _(NDArray, np):
+    def fragment(memory: NDArray[int]):
+        for file_ID in range(int(np.nanmax(memory)), -1, -1):
+            block_size = np.count_nonzero(memory == file_ID)
+            file_ID_start_ind = np.where(memory == file_ID)[0][0]
+            # find free space that can fit current block
+            found_block = False
+            ind = 0
+            while not found_block and ind < len(memory):
+                if np.isnan(memory[ind]):
+                    if ind > file_ID_start_ind:
                         break
-                corr_highest_ind = len(memory) - 1 - highest_ind
-                # break loop if sorting is complete
-                if corr_highest_ind < ind:
-                    sorted = True
-                # swap memory location of highest_element to index
+                    # get size of free block
+                    free_size = 0
+                    while ind + free_size < len(memory) and np.isnan(
+                        memory[ind + free_size]
+                    ):
+                        free_size += 1
+                    if free_size >= block_size:
+                        found_block = True
+                        break
+                    else:
+                        ind += free_size
                 else:
-                    memory[ind] = highest_element
-                    memory[corr_highest_ind] = np.nan
-            if sorted:
-                return memory
+                    ind += 1
+            if found_block:
+                file_ID_ind = np.where(memory == file_ID)
+                memory[file_ID_ind] = np.repeat(np.nan, block_size)
+                memory[ind : ind + block_size] = np.repeat(file_ID, block_size)
+        return memory
     return (fragment,)
 
 
 @app.cell
-def _(np):
-    def checksum(memory: np.array):
+def _(NDArray, np):
+    def checksum(memory: NDArray[int]):
         checksum = 0
         for ind, element in enumerate(memory):
             if np.isnan(element):
-                break
+                continue
             checksum += ind * element
         return checksum
     return (checksum,)
@@ -82,7 +94,7 @@ def _(Path, checksum, convert_map, fragment, np):
 @app.cell
 def _(main):
     result = main("test.txt")
-    expected = 1928
+    expected = 2858
     if result != expected:
         print(f"test failed {result} != {expected}")
     else:
