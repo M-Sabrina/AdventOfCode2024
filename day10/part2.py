@@ -13,13 +13,9 @@ def _():
 
 
 @app.cell
-def _(NDArray, Path, np):
-    map_score = np.array([])
-
-
-    def hike(row: int, col: int, map: NDArray):
+def _(NDArray, np):
+    def hike(row: int, col: int, map: NDArray, map_score: NDArray):
         max_row, max_col = np.shape(map)
-        global map_score
         if map[row, col] == 9:
             # print(f"Trailhead at: {row} {col}")
             map_score[row, col] += 1
@@ -39,24 +35,26 @@ def _(NDArray, Path, np):
                 ):
                     if map[scan_row, scan_col] == (map[row, col] + 1):
                         # print(f"Next step: {scan_row} {scan_col}")
-                        hike(scan_row, scan_col, map)
+                        hike(scan_row, scan_col, map, map_score)
+    return (hike,)
 
 
+@app.cell
+def _(Path, hike, np):
     def main(input: str):
         datafile = Path("day10") / input
         lines = datafile.read_text().splitlines()
         map = np.array([list(line) for line in lines]).astype(int)
         start_y, start_x = np.where(map == 0)
         score = 0
-        global map_score
         for y0, x0 in zip(start_y, start_x):
             # print(f"Start at: {y0} {x0}")
             map_score = np.zeros_like(map, dtype=int)
-            hike(y0, x0, map)
+            hike(y0, x0, map, map_score)
             score += np.sum(map_score)
         # print(map_score)
         return score
-    return hike, main, map_score
+    return (main,)
 
 
 @app.cell
