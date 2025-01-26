@@ -8,8 +8,7 @@ app = marimo.App(width="medium")
 def _():
     from pathlib import Path
     import numpy as np
-    from numpy.typing import NDArray
-    return NDArray, Path, np
+    return Path, np
 
 
 @app.cell
@@ -41,8 +40,8 @@ def _(Path, np):
             # winning_B = []
             costs_win = []
             can_win = False
-            for push_button_A in range(100):
-                for push_button_B in range(100):
+            for push_button_A in range(101):
+                for push_button_B in range(101):
                     X = push_button_A * X_A + push_button_B * X_B
                     Y = push_button_A * Y_A + push_button_B * Y_B
                     if (X, Y) == (X_price, Y_price):
