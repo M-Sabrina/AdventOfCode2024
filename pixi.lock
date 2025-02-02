@@ -680,8 +680,6 @@ packages:
   - suitesparse >=7.7.0,<8.0a0
   - zlib
   - libutf8proc <2.9
-  arch: x86_64
-  platform: linux
   license: MIT
   license_family: MIT
   size: 106723241
@@ -1660,6 +1658,8 @@ packages:
   - python >=3.12,<3.13.0a0
   - python_abi 3.12.* *_cp312
   - tornado >=5
+  arch: x86_64
+  platform: linux
   license: PSF-2.0
   license_family: PSF
   size: 16863
